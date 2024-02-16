@@ -14,6 +14,7 @@
 # later reference.
 - name: "Look up user's profiles"
   profile:
+  check_mode: no
   register: profiles
 
 - name: Set default profile
