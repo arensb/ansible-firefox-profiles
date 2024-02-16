@@ -7,9 +7,13 @@
 - name: "Protocol {{ protocol.name }}"
   vars:
     profile_subdir: "{{ firefox_dir }}/{{ profiles.profiles[profile].path | default('dummy') }}"
-    # This is complicated because one dict key is derived from a
-    # variable. Keys aren't expanded through jinja, so we need to
-    # use the ansible.builtin.dict2items filter.
+    # We need to create a new section:
+    # .schemes.<protocol-name>.{ ... }
+    #
+    # But there's no good way to create this as an Ansible variable
+    # defined in YAML, because the key (to the left of the colon)
+    # isn't passed through Jinja. So we need to use the
+    # ansible.builtin.dict2items filter to create it dynamically.
     new_handler:
       schemes: |-
         {{ [
@@ -29,12 +33,23 @@
     - debug:
         var: new_handler
     - name: Add protocols
+      # We might have been given an array of protocols but that's okay:
+      # just shove them all in there.
+      #
+      # Note that we combine() recursively, so as to actually merge
+      # the records, not replace the existing 'schemes' entry.
+      #
+      # Save this new value to 'new_ff_handlers', so we can compare
+      # with the old value.
       set_fact:
         new_ff_handlers: "{{ ff_handlers | default([]) | combine(new_handler, recursive=True) }}"
       check_mode: no
     - debug:
         var: new_ff_handlers
     - name: Check for changes
+      # This is a bit of a hack: the assertion is always true. Here,
+      # we're only interested in the 'notify' and 'changed_when'
+      # parts, but can't have a play without a module.
       assert:
         that: yes
         quiet: yes
