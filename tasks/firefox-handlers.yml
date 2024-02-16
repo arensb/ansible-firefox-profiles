@@ -1,0 +1,47 @@
+# This adds a protocol handler.
+# If you want Firefox to handle links with a protocol "foo", like
+# "foo:/some/other/stuff", then this is the place they get added.
+---
+# XXX - There ought to be a way to delete a protocol handler.
+
+- name: "Protocol {{ protocol.name }}"
+  vars:
+    profile_subdir: "{{ firefox_dir }}/{{ profiles.profiles[profile].path | default('dummy') }}"
+    # This is complicated because one dict key is derived from a
+    # variable. Keys aren't expanded through jinja, so we need to
+    # use the ansible.builtin.dict2items filter.
+    new_handler:
+      schemes: |-
+        {{ [
+          {'key': protocol['name'],
+           'value': {
+               'action': protocol['action'] | default(2),
+               'ask': protocol['ask'] | default(true),
+               'handlers': protocol.handlers | default([]),
+             }
+          }] |
+        items2dict }}
+  block:
+    - debug:
+        var: ff_handlers
+    - debug:
+        var: protocol
+    - debug:
+        var: new_handler
+    - name: Add protocols
+      set_fact:
+        new_ff_handlers: "{{ ff_handlers | default([]) | combine(new_handler, recursive=True) }}"
+      check_mode: no
+    - debug:
+        var: new_ff_handlers
+    - name: Check for changes
+      assert:
+        that: yes
+        quiet: yes
+      changed_when:
+        - new_ff_handlers != ff_handlers
+      # This will trigger updating the handlers.json file after all of
+      # the protocols in this profile have been checked.
+      notify: update-protocols
+    - debug:
+        var: ff_handlers
