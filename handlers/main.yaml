@@ -1,0 +1,7 @@
+# Handlers
+---
+- name: Update list of protocol handlers
+  listen: update-protocols
+  copy:
+    content: "{{ new_ff_handlers | to_json(separators=[',', ':']) }}"
+    dest: "{{ firefox_dir }}/{{ profiles.profiles[profile].path | default('dummy') }}/handlers.json"
