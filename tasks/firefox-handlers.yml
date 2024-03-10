@@ -1,0 +1,52 @@
+# This adds a protocol handler.
+# If you want Firefox to handle links with a protocol "foo", like
+# "foo:/some/other/stuff", then this is the place they get added.
+---
+# XXX - There ought to be a way to delete a protocol handler.
+
+- name: "Protocol {{ protocol.name }}"
+  vars:
+    profile_subdir: "{{ firefox_dir }}/{{ profiles.profiles[profile].path | default('dummy') }}"
+    # We need to create a new section:
+    # .schemes.<protocol-name>.{ ... }
+    #
+    # But there's no good way to create this as an Ansible variable
+    # defined in YAML, because the key (to the left of the colon)
+    # isn't passed through Jinja. So we need to use the
+    # ansible.builtin.dict2items filter to create it dynamically.
+    new_handler:
+      schemes: |-
+        {{ [
+          {'key': protocol['name'],
+           'value': {
+               'action': protocol['action'] | default(2),
+               'ask': protocol['ask'] | default(true),
+               'handlers': protocol.handlers | default([]),
+             }
+          }] |
+        items2dict }}
+  block:
+    - name: Add protocols
+      # We might have been given an array of protocols but that's okay:
+      # just shove them all in there.
+      #
+      # Note that we combine() recursively, so as to actually merge
+      # the records, not replace the existing 'schemes' entry.
+      #
+      # Save this new value to 'new_ff_handlers', so we can compare
+      # with the old value.
+      set_fact:
+        new_ff_handlers: "{{ ff_handlers | default([]) | combine(new_handler, recursive=True) }}"
+      check_mode: no
+    - name: Check for changes
+      # This is a bit of a hack: the assertion is always true. Here,
+      # we're only interested in the 'notify' and 'changed_when'
+      # parts, but can't have a play without a module.
+      assert:
+        that: yes
+        quiet: yes
+      changed_when:
+        - new_ff_handlers != ff_handlers
+      # This will trigger updating the handlers.json file after all of
+      # the protocols in this profile have been checked.
+      notify: update-protocols

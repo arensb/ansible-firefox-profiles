@@ -89,3 +89,34 @@
     - security_devices is defined
     - security_devices != ""
     - security_devices | length > 0
+
+# Tweak protocol handlers.
+#
+# The caller may have given us multiple protocols to add, and we're
+# going to include 'firefox-handlers.yml' for each one. But we're only
+# going to read the initial protocol list once, out here.
+#
+# And if the list is modified, it'll only be changed at the end, by a
+# handler in ../handlers.
+- name: Read existing protocol handlers
+  # Ansible can parse JSON variable files, so that seems like the
+  # simplest way to slurp in this data.
+  include_vars:
+    file: "{{ firefox_dir }}/{{ profiles.profiles[profile].path | default('dummy') }}/handlers.json"
+    name: "ff_handlers"
+  when:
+    - protocols is defined
+    - protocols != ""
+    - protocols | length > 0
+
+# Loop over the list of protocols we've been given, and include
+# 'firefox-handlers.yml' for each one.
+- name: Manage protocol handlers
+  include_tasks: firefox-handlers.yml
+  with_items: "{{ protocols }}"
+  loop_control:
+    loop_var: protocol
+  when:
+    - protocols is defined
+    - protocols != ""
+    - protocols | length > 0

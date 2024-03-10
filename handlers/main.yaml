@@ -1,0 +1,11 @@
+# Handlers
+---
+# This handler normally gets invoked just once, at the end of the
+# role. This is because we might be given several protocols to add (or
+# several operations to perform). No point in writing this file
+# multiple times.
+- name: Update list of protocol handlers
+  listen: update-protocols
+  copy:
+    content: "{{ new_ff_handlers | to_json(separators=[',', ':']) }}"
+    dest: "{{ firefox_dir }}/{{ profiles.profiles[profile].path | default('dummy') }}/handlers.json"
