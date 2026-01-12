@@ -78,6 +78,7 @@
   when:
     - prefs is defined
     - prefs != ""
+    - prefs.keys()|length > 0
 
 # Install security devices
 - name: Install security devices
