@@ -65,7 +65,7 @@
   lineinfile:
     path: "{{ profile_subdir }}/prefs.js"
     regexp: '^user_pref\(\"{{ item }}\",.*'
-    line: 'user_pref("{{ item }}", {{ prefs[item] }});'
+    line: 'user_pref("{{ item.key }}", {{ item.value }});'
     create: yes
     owner: "{{ firefox_owner | default(ansible_facts['user_id'])}}"
     group: "{{ firefox_group | default(ansible_facts['effective_group_id'])}}"
@@ -73,8 +73,8 @@
     # If the value is "null", then remove this line altogether.
     # Useful for cases like "network.proxy.type: 5": 5 is the default,
     # so Firefox removes the line entirely.
-    state: "{{ 'absent' if prefs[item] == None else 'present' }}"
-  with_items: "{{ prefs }}"
+    state: "{{ 'absent' if item.value == None else 'present' }}"
+  loop: "{{ prefs | dict2items }}"
   when:
     - prefs is defined
     - prefs != ""
