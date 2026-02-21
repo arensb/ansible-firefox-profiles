@@ -8,7 +8,7 @@ prefs: {}
 firefox_cmd: firefox
 
 # Root of Firefox configuration
-firefox_dir: "{{ ansible_env.HOME }}/.mozilla/firefox"
+firefox_dir: "{{ lookup('env', 'HOME') }}/.mozilla/firefox"
 
 # XXX - Not implemented yet
 # profile_state can be 'present' (create the profile if it doesn't exist)
