@@ -9,7 +9,7 @@
   with_items:
     - python3-jmespath
   when:
-    - ansible_pkg_mgr == "apt"
+    - ansible_facts['pkg_mgr'] == "apt"
 
 - name: Install prerequisites (Macports)
   become: yes
@@ -23,4 +23,4 @@
     - curl-ca-bundle
     - py-jmespath
   when:
-    - ansible_pkg_mgr == "macports"
+    - ansible_facts['pkg_mgr'] == "macports"

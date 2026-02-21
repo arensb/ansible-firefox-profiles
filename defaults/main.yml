@@ -20,5 +20,5 @@ firefox_dir: "{{ ansible_env.HOME }}/.mozilla/firefox"
 firefox_profile_path: "{{ firefox_dir }}/profiles.ini"
 
 # Owner and group of the Firefox directory
-firefox_owner: "{{ ansible_user_id }}"
-firefox_group: "{{ ansible_effective_group_id }}"
+firefox_owner: "{{ ansible_facts['user_id'] }}"
+firefox_group: "{{ ansible_facts['effective_group_id'] }}"

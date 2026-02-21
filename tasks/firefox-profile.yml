@@ -67,8 +67,8 @@
     regexp: '^user_pref\(\"{{ item }}\",.*'
     line: 'user_pref("{{ item }}", {{ prefs[item] }});'
     create: yes
-    owner: "{{ firefox_owner | default(ansible_user_id)}}"
-    group: "{{ firefox_group | default(ansible_effective_group_id)}}"
+    owner: "{{ firefox_owner | default(ansible_facts['user_id'])}}"
+    group: "{{ firefox_group | default(ansible_facts['effective_group_id'])}}"
     mode: '0644'
     # If the value is "null", then remove this line altogether.
     # Useful for cases like "network.proxy.type: 5": 5 is the default,

@@ -27,8 +27,8 @@
   file:
     path: "{{ profile_subdir }}/extensions"
     state: directory
-    owner: "{{ firefox_owner | default(ansible_user_id)}}"
-    group: "{{ firefox_group | default(ansible_effective_group_id)}}"
+    owner: "{{ firefox_owner | default(ansible_facts['user_id'])}}"
+    group: "{{ firefox_group | default(ansible_facts['effective_group_id'])}}"
     mode: '0755'
 
 # Download each file
@@ -43,8 +43,8 @@
     url: "{{ item.url }}"
     dest: "{{ profile_subdir }}/extensions/{{ basename }}"
     creates: "{{ profile_subdir }}/extensions/{{ basename }}"
-    owner: "{{ firefox_owner | default(ansible_user_id)}}"
-    group: "{{ firefox_group | default(ansible_effective_group_id)}}"
+    owner: "{{ firefox_owner | default(ansible_facts['user_id'])}}"
+    group: "{{ firefox_group | default(ansible_facts['effective_group_id'])}}"
     mode: '0644'
   with_items: "{{ addon_info.json | json_query('current_version.files') | list }}"
   loop_control:
