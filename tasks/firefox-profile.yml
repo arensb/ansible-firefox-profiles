@@ -60,7 +60,7 @@
         # parameter. But we don't know the exact name of the directory
         # that will be created, so we need to pass a glob. This was
         # added in 2.0, so need to add that as a requirement.
-        changed: "{{ firefox_dir }}{{ profile_subpath }}/*.{{ profile }}"
+        creates: "{{ firefox_dir }}{{ profile_subpath }}/*.{{ profile }}"
       when: profiles.profiles[profile] is not defined
       register: create_profile
     - name: "Reread profiles.ini"
