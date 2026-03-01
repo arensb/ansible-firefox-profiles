@@ -5,8 +5,9 @@
 # On Linux boxes, this is "", while on Macs, it's "/Profiles".
 - name: Get the profile subdirectory
   block:
-    - set_fact:
-        profile_subpath: ""
+    # XXX - Debugging only.
+    # - set_fact:
+    #     profile_subpath: ""
     - set_fact:
         profile_subpath: "/Profiles"
       # XXX - Hard-code this for now, for debugging.
