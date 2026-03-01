@@ -1,6 +1,18 @@
 ---
 # Create a Firefox profile
 
+# Set profile_subpath: directory under profile_dir where profiles are put.
+# On Linux boxes, this is "", while on Macs, it's "/Profiles".
+- name: Get the profile subdirectory
+  block:
+    - set_fact:
+        profile_subpath: ""
+    - set_fact:
+        profile_subpath: "/Profiles"
+      when:
+        - ansible_facts['os_family'] == "Darwin"
+  when: "{{ profile_subpath is not defined }}"
+
 # XXX - Ought to be able to delete profiles, or rebuild them.
 # Unfortunately,
 # https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options
@@ -44,6 +56,13 @@
           - "{{ profile }}"
       when: profiles.profiles[profile] is not defined
       register: create_profile
+      # XXX - This registers as "not changed", even when it has run
+      # and created a profile directory. To get it to return
+      # changed/unchanged properly, need to pass the "creates"
+      # parameter. But we don't know the exact name of the directory
+      # that will be created, so we need to pass a glob. This was
+      # added in 2.0, so need to add that as a requirement.
+      changed: "{{ firefox_dir }}{{ profile_subpath }}/*.{{ profile }}"
     - name: "Reread profiles.ini"
       profile:
       when: create_profile is changed
