@@ -9,7 +9,8 @@
         profile_subpath: ""
     - set_fact:
         profile_subpath: "/Profiles"
-      when: ansible_os_family == "Darwin"
+      # XXX - Hard-code this for now, for debugging.
+      # when: ansible_os_family == "Darwin"
   when: profile_subpath is not defined
 
 # XXX - Ought to be able to delete profiles, or rebuild them.
