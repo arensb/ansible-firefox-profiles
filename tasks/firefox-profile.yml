@@ -67,6 +67,7 @@
     - name: "Reread profiles.ini"
       profile:
       when: create_profile is changed
+    - debug: var=profiles
 
 # Install addons (and themes)
 - name: "Profile {{ profile }}: Install addons"
