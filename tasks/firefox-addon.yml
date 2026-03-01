@@ -1,6 +1,7 @@
 ---
 # Parameters:
 # - addon_slug: "slug" for the addon to install, e.g., "adblock-plus".
+- debug: var=profiles
 
 # See also
 # https://stackoverflow.com/questions/37728865/install-webextensions-on-firefox-from-the-command-line
@@ -23,6 +24,11 @@
 #   $HOME/.mozilla/firefox/<profile-dir>/extensions/
 # MacOS:
 #   $HOME/Library/Application Support/Firefox/Profiles/<profile-dir>/extensions
+
+# XXX - This fails if the profile directory was created during this
+# role execution. Although firefox-profile.yml reruns `profile:' when
+# it creates the profile, apparently that's not enough for the
+# `profile_subdir' variable further down, which still uses the default "abcd1234" value.
 - name: "Profile {{ profile }}: addon {{ addon_slug }}: Create extension directory"
   file:
     path: "{{ profile_subdir }}/extensions"
