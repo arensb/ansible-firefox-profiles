@@ -55,6 +55,11 @@
     owner: "{{ firefox_owner | default(ansible_facts['user_id'])}}"
     group: "{{ firefox_group | default(ansible_facts['effective_group_id'])}}"
     mode: '0644'
+    # addons.mozilla.org returns status "304: Not Modified", which
+    # says it's okay to use a cached version. The uri module chokes on
+    # this, and I don't think there's a cached version we can reliably
+    # use. So force downloading.
+    force: yes
   with_items: "{{ addon_info.json | json_query('current_version.files') | list }}"
   loop_control:
     label: "{{ slug }}"
