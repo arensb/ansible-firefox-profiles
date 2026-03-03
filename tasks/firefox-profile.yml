@@ -66,6 +66,7 @@
       register: create_profile
     - name: "Reread profiles.ini"
       profile:
+      register: profiles
       when: create_profile is changed
     - debug: var=profiles
 
