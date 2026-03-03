@@ -47,6 +47,7 @@
     # Extract guid
     guid: "{{ addon_info.json | json_query('guid') }}"
     basename: "{{ guid }}.xpi"
+    ext_dir: "{{ profile_subdir | ansible.builtin.basename }}/extensions"
   uri:
     url: "{{ item.url }}"
     dest: "{{ ext_dir }}/{{ basename }}"
