@@ -67,7 +67,10 @@
     - name: "Reread profiles.ini"
       profile:
       register: profiles
-      when: create_profile is changed
+      # Always reread the profiles. It's cheap, doesn't hurt anything,
+      # and checking whether it needs to be done wastes more effort
+      # than it saves.
+      check_mode: no
     - debug: var=profiles
 
 # Install addons (and themes)
