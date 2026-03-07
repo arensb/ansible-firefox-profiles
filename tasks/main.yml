@@ -21,7 +21,6 @@
   set_fact:
     profile: "{{ profiles.default_profile }}"
   when: profile is not defined
-- debug: var=profile
 
 # tasks file for roles/firefox
 - include_tasks: firefox-profile.yml

@@ -8,7 +8,6 @@
 ---
 # Parameters:
 # - addon_slug: "slug" for the addon to install, e.g., "adblock-plus".
-- debug: var=profiles
 
 # See also
 # https://stackoverflow.com/questions/37728865/install-webextensions-on-firefox-from-the-command-line

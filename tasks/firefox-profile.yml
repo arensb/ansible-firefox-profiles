@@ -70,7 +70,6 @@
       # and checking whether it needs to be done wastes more effort
       # than it saves.
       check_mode: no
-    - debug: var=profiles
 
 # Install addons (and themes)
 - name: "Profile {{ profile }}: Install addons"

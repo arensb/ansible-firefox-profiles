@@ -14,9 +14,11 @@ firefox_dir: "{{ lookup('env', 'HOME') }}/.mozilla/firefox"
 # profile_state can be 'present' (create the profile if it doesn't exist)
 # or 'absent' (delete the profile if it exists)
 # profile_state: present
+#
+# There's no firefox argument to delete a profile from the command
+# line. All the documentation says to go through the profile manager.
 
 # Path to profiles.ini
-#firefox_profile_path: "{{ lookup('env', 'HOME')}}/.mozilla/firefox/profiles.ini"
 firefox_profile_path: "{{ firefox_dir }}/profiles.ini"
 
 # Under Linux, profiles go in the same directory as "profiles.ini".
