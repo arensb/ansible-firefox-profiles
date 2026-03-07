@@ -43,7 +43,7 @@ profiles:
   description: Dict of profiles in C(profiles.ini), indexed by their profile name.
   returned: always
   type: dict
-sectdions:
+sections:
   description: Dict of sections in C(profiles.ini) that aren't profiles, indexed by section name.
   returned: always
   type: dict
