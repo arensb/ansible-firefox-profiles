@@ -32,13 +32,9 @@
 # MacOS:
 #   $HOME/Library/Application Support/Firefox/Profiles/<profile-dir>/extensions
 
-# XXX - This fails if the profile directory was created during this
-# role execution. Although firefox-profile.yml reruns `profile:' when
-# it creates the profile, apparently that's not enough for the
-# `profile_subdir' variable further down, which still uses the default "abcd1234" value.
 - name: "Profile {{ profile }}: addon {{ addon_slug }}: Create extension directory"
   vars:
-    ext_dir: "{{ profile_subdir | ansible.builtin.basename }}/extensions"
+    ext_dir: "{{ profile_subdir }}/extensions"
   file:
     path: "{{ ext_dir }}"
     state: directory
@@ -54,7 +50,7 @@
     # Extract guid
     guid: "{{ addon_info.json | json_query('guid') }}"
     basename: "{{ guid }}.xpi"
-    ext_dir: "{{ profile_subdir | ansible.builtin.basename }}/extensions"
+    ext_dir: "{{ profile_subdir }}/extensions"
   uri:
     url: "{{ item.url }}"
     dest: "{{ ext_dir }}/{{ basename }}"
