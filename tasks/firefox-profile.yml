@@ -4,15 +4,14 @@
 # Set profile_subpath: directory under profile_dir where profiles are put.
 # On Linux boxes, this is "", while on Macs, it's "/Profiles".
 - name: Get the profile subdirectory
-  block:
-    # XXX - Debugging only.
-    # - set_fact:
-    #     profile_subpath: ""
-    - set_fact:
-        profile_subpath: "/Profiles"
-      # XXX - Hard-code this for now, for debugging.
-      # when: ansible_os_family == "Darwin"
+  set_fact:
+    # Look this up in a table.
+    profile_subpath: >-
+      {{ firefox_profile_subpath[ansible_facts["os_family"]] |
+         default(firefox_profile_subpath["default"])
+      }}
   when: profile_subpath is not defined
+  check_mode: no
 
 # XXX - Ought to be able to delete profiles, or rebuild them.
 # Unfortunately,

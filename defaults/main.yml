@@ -19,6 +19,15 @@ firefox_dir: "{{ lookup('env', 'HOME') }}/.mozilla/firefox"
 #firefox_profile_path: "{{ lookup('env', 'HOME')}}/.mozilla/firefox/profiles.ini"
 firefox_profile_path: "{{ firefox_dir }}/profiles.ini"
 
+# Under Linux, profiles go in the same directory as "profiles.ini".
+# Under MacOS, there's a "Profiles" directory on the same level as
+# "profiles.ini", that profiles go in. `firefox_profile_subpath' is
+# keyed by ansible_facts['os_family'] and gives this subdirectory, if
+# any.
+firefox_profile_subpath:
+  "Darwin": "/Profiles"
+  "default": ""
+
 # Owner and group of the Firefox directory
 firefox_owner: "{{ ansible_facts['user_id'] }}"
 firefox_group: "{{ ansible_facts['effective_group_id'] }}"
