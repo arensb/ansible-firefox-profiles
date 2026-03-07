@@ -1,3 +1,10 @@
+# XXX - https://www.codegenes.net/blog/install-webextensions-on-firefox-from-the-command-line/
+# suggests installing using
+#     firefox --headless --load-extension=/path/to/extension
+# to install an extension. But that's just temporary, useful for debugging.
+#
+# https://stackoverflow.com/questions/37728865/install-webextensions-on-firefox-from-the-command-line
+# has more information.
 ---
 # Parameters:
 # - addon_slug: "slug" for the addon to install, e.g., "adblock-plus".

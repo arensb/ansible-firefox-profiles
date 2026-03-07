@@ -77,6 +77,8 @@ def run_module():
     )
 
     retval = dict(
+        # XXX - Should this ever show up as changed? Ideally when the
+        # list of profiles changes. How easy is that to test?
         changed=False,
         profiles={},            # Dict of browser profiles
         sections={},            # Dict of other sections in the file
