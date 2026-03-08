@@ -110,6 +110,10 @@ Including an example of how to use your role (for instance, with variables passe
             # Note the doubly-nested quotes. Necessary for string values.
             network.proxy.ftp: '"localhost"'
             network.proxy.ftp_port: 12345
+Bugs
+----
+- It is not currently possible to delete a profile using this role. Mozilla does not document a way to delete a profile without going through the Profile Manager.
+
 License
 -------
 
