@@ -19,46 +19,6 @@ Another suggests
     include_vars: "{{ (override_os_family is defined) | ternary(override_os_family,ansible_os_family) | lower }}.yml"
 #+end_src
 
-* DONE Look up profile directory
-CLOSED: [2022-12-14 Wed 15:39]
-There's a [[https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ini_lookup.html][lookup plugin for .ini files]]. Should be possible to use that to read the ~profiles.ini~ file and get the actual directory used for a given profile, and not guess it.
-
-Profiles are of the form:
-#+begin_src conf
-[Profile6]
-Name=NCBI4
-IsRelative=1
-Path=ccb0rcrm.NCBI4
-#+end_src
-
-So to look up a profile by name (here, "NCBI4"), need to find the section that contains "Name=NCBI4". If that's not possible, might need to iterate over all sections.
-
-Doesn't look as though there's a way to do this kind of search. However, the sections are of the form "Profile<n>". And apparently Firefox keeps removes gaps, so that if there are N profiles, they will be =Profile0= through =ProfileN=. So in principle, we can set up a for loop:
-
-https://docs.ansible.com/ansible/2.4/playbooks_loops.html#looping-over-integer-sequences
-
-Search =Profile0=, =Profile1=, ... =ProfileN= until the desired section doesn't exist.
-
-* DONE Addons
-CLOSED: [2022-12-14 Wed 15:39]
-It might not be possible to install addons just by dumping an xpi file in a directory somewhere. It might be necessary to create a =policies.json= file that says to download and update certain extensions.
-
-Or maybe it /is/ possible:
-https://support.mozilla.org/en-US/kb/deploying-firefox-with-extensions
-says to dump the XPI files in a directory.
-
-So maybe it's just that unknown or unsigned extensions won't be allowed, which doesn't concern us.
-
-See
-https://extensionworkshop.com/documentation/publish/distribute-sideloading/#standard-extension-folders
-
-* DONE Themes
-CLOSED: [2022-12-14 Wed 15:39]
-They're documented in =extensions.json=. Apparently they're considered addons just like plugins.
-
-=green-abstract= is in
-: ~/.mozilla/firefox/gbg4mnfw.carrot/extensions/{ce743293-2169-47f3-bccf-dc42e2121e0a}.xpi
-
 * TODO Delete profiles
 It would be nice to delete profiles as well as create them:
 : firefox -no-remote -DeleteProfile <profile>
@@ -69,17 +29,30 @@ Would it work with ~-new-instance~ ?
 
 Also maybe ~-headless~, especially on remote host.
 
-* DONE Fill out README.md
-CLOSED: [2022-12-15 Thu 08:49]
-
-* DONE Upload to ansible-galaxy
-CLOSED: [2022-12-15 Thu 15:53]
-
 * TODO Support for snap version
 Make this an option: while installing Firefox as a snap is the default, it's not required.
 
 Maybe run
 : snap info firefox
 and see if it returns 0
+
 * TODO Can't create first profile
 When there aren't any profiles, this role fails to find the default. So it fails even if the user asked to create a new one.
+
+* TODO Make prefs less picky
+It's annoying that booleans have to be quoted, and that strings have to be double-quoted. See if there's a way to make this role less picky. It would be nice to use "yes" or "true" as a regular YAML boolean, and have that turned into a JS boolean in the prefs file.
+
+* TODO Accept defaults
+If you set a pref to its default value. Firefox will just delete it. Is there a good way to handle this? Maybe just document that if you're setting a value to the default, set it to ~null~?
+
+* TODO Bookmarks
+https://stackoverflow.com/questions/51124179/how-can-i-add-or-remove-a-bookmark-tag-in-firefox-via-the-command-line
+has a lot of information on how to add bookmarks to ~spaces.sqlite~.
+
+* TODO Add certificate authorities
+Settings→Privacy & Security→Security→Certificates→View Certificates→Authorities
+
+I have to manually import NIH and HHS certs. Would be nice to do this automatically.
+
+Looks like this gets added to =cert9.db=.
+
