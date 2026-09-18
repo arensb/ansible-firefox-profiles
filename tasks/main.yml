@@ -1,4 +1,9 @@
 ---
+- name: Set default profile
+  set_fact:
+    profile: "{{ profiles.default_profile }}"
+  when: profile is not defined
+
 # Prerequisite packages
 - include_tasks: packages.yaml
 
@@ -16,11 +21,6 @@
   profile:
   check_mode: no
   register: profiles
-
-- name: Set default profile
-  set_fact:
-    profile: "{{ profiles.default_profile }}"
-  when: profile is not defined
 
 # tasks file for roles/firefox
 - include_tasks: firefox-profile.yml
